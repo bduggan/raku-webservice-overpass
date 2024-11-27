@@ -55,7 +55,7 @@ The URL of the Overpass API endpoint.
 SEE ALSO
 ========
 
-    https://wiki.openstreetmap.org/wiki/Overpass_API
+https://wiki.openstreetmap.org/wiki/Overpass_API
 
 AUTHOR
 ======
