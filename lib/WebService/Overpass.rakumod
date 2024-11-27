@@ -46,7 +46,9 @@ WebService::Overpass - A simple interface to the Overpass API
 
 =head1 DESCRIPTION
 
-This module provides a simple interface to the Overpass API.
+This is a simple interface to the Overpass API.  Overpass is an API
+for retrieving OpenStreetMap data.  Queries use the Overpass Query
+Language (Overpass QL).
 
 =head1 METHODS
 
@@ -54,9 +56,12 @@ This module provides a simple interface to the Overpass API.
 
   method query($data) returns Str
 
-This method sends a query to the Overpass API and returns the result.
+Send a query and return the result (as a string).
 
-The C<$data> parameter should be a string containing the query to be executed.
+The C<$data> parameter should be a complete overpass query.
+
+The format of the response depends on the first line of the query (csv,
+json etc).  No parsing is currently done by this module.
 
 =head1 ATTRIBUTES
 
@@ -75,6 +80,3 @@ https://wiki.openstreetmap.org/wiki/Overpass_API
 Brian Duggan
 
 =end pod
-
-
-

@@ -28,7 +28,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-This module provides a simple interface to the Overpass API.
+This is a simple interface to the Overpass API. Overpass is an API for retrieving OpenStreetMap data. Queries use the Overpass Query Language (Overpass QL).
 
 METHODS
 =======
@@ -38,9 +38,11 @@ query
 
     method query($data) returns Str
 
-This method sends a query to the Overpass API and returns the result.
+Send a query and return the result (as a string).
 
-The `$data` parameter should be a string containing the query to be executed.
+The `$data` parameter should be a complete overpass query.
+
+The format of the response depends on the first line of the query (csv, json etc). No parsing is currently done by this module.
 
 ATTRIBUTES
 ==========
