@@ -68,7 +68,7 @@ The URL of the Overpass API endpoint.
 
 =head1 SEE ALSO
 
-  [https://wiki.openstreetmap.org/wiki/Overpass_API]
+  https://wiki.openstreetmap.org/wiki/Overpass_API
 
 =head1 AUTHOR
 
