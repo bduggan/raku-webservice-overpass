@@ -4,7 +4,7 @@
     "Brian Duggan"
   ],
   "provides" : {
-    "My::Module" : "lib/WebService/Overpass.rakumod"
+    "WebService::Overpass" : "lib/WebService/Overpass.rakumod"
   },
   "build-depends" : [ ],
   "depends" : [
