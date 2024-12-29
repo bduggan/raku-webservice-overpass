@@ -8,7 +8,7 @@
   },
   "build-depends" : [ ],
   "depends" : [
-    "Log::Async", "HTTP::Tiny"
+    "Log::Async", "HTTP::Tiny", "IO::Socket::SSL"
   ],
   "description" : "Simple wrapper to call the overpass API",
   "tags" : [

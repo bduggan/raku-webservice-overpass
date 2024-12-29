@@ -14,6 +14,7 @@ method query($data) {
   debug "> $_" for $data.lines;
   my $res = HTTP::Tiny.new.post: $!url, :content(%(:$data));
   unless $res<success> {
+    note $res<content>.decode;
     die "Error querying Overpass API: $res<status> $res<reason>";
   }
   my $out = $res<content>.decode;
