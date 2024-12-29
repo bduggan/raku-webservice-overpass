@@ -1,8 +1,12 @@
+0.0.4 2024-12-29
+   add SSL dependency
+   show diagnostics on failure
+
 0.0.3 2024-11-28
-    better examples
+   better examples
 
 0.0.2 2024-11-27
-    update docs
+   update docs
 
 0.0.1 2024-11-27
    Initial release
