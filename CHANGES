@@ -1,3 +1,6 @@
+0.0.5 2025-01-19
+  statements, settings
+
 0.0.4 2024-12-29
    add SSL dependency
    show diagnostics on failure
