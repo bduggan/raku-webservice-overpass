@@ -15,14 +15,14 @@ has %.settings is rw;
 
 method execute(Bool :$xml, Bool :$json) {
   my %settings := self.settings;
-  die "need an output format" unless $json || $xml || self.settings<out>;
+  warning "no output format given" unless $json || $xml || self.settings<out>;
   %settings<out> = 'json' if $json;
   %settings<out> = 'xml' if $xml;
   my $stmt = self.statements.join("\n");
   # format: [out:json] [timeout:30] [bbox:$bbox] ;
   my $str = %settings.map({ '[' ~ .key ~ ':' ~ .value ~ ']' }).join(' ');
-  my $use-json = $json || %settings<out> eq 'json';
-  my $use-xml = $xml || %settings<out> eq 'xml';
+  my $use-json = $json || (%settings<out>  // '' ) eq 'json';
+  my $use-xml = $xml || (%settings<out> // '' ) eq 'xml';
   my $data = $str ~ ';' ~ "\n" ~ $stmt;
   self.query: $data, :json($use-json), :xml($use-xml);
 }

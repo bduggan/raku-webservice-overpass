@@ -8,7 +8,7 @@ op.logger.send-to: $*ERR;
 my @q;
 op.^find_method('query').wrap: -> |q { @q.push(q); }
 op.statements = 'node;out;/* abc */';
-my $out = op.execute;
+my $out = op.execute(:json);
 ok $out.elems == 1, 'one query executed';
 ok @q.elems == 1, 'one query pushed';
 ok (@q.grep: /abc/), 'abc in a line';
