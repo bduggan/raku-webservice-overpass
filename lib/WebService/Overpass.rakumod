@@ -14,10 +14,10 @@ has Str @.statements is rw;
 has %.settings is rw;
 
 method execute(Bool :$xml, Bool :$json) {
-  my %settings = self.settings;
+  my %settings := self.settings;
+  die "need an output format" unless $json || $xml || self.settings<out>;
   %settings<out> = 'json' if $json;
   %settings<out> = 'xml' if $xml;
-  %settings<out> //= 'json';
   my $stmt = self.statements.join("\n");
   # format: [out:json] [timeout:30] [bbox:$bbox] ;
   my $str = %settings.map({ '[' ~ .key ~ ':' ~ .value ~ ']' }).join(' ');
@@ -145,14 +145,19 @@ Language (Overpass QL).
 
 =head2 query
 
-  method query($data) returns Str
+  method query($data, Bool :$json, Bool :$xml) returns Str
 
-Send a query and return the result (as a string).
+Send a complete query and return the result (as a string).
 
-The C<$data> parameter should be a complete overpass query.
+The C<$data> parameter should be a complete overpass query.  Overpass
+queries consist of "settings" followed by a semicolon, and then "statements".
+The settings are key-value pairs in square brackets.
 
 The format of the response depends on the first line of the query (csv,
-json etc).  No parsing is currently done by this module.
+json etc).  If C<:json> is True, the response is parsed as JSON.  If
+C<:xml> is True, the response is parsed as XML.  Otherwise, it
+is returned as a string.  For "smarter" behavior, use the C<execute>
+method below.
 
 =head2 execute
 
@@ -160,13 +165,20 @@ json etc).  No parsing is currently done by this module.
 
 Send a query and return the result as a raku data structure.
 
-The C<:xml> and C<:json> parameters are optional and specify the
-output format.  If neither is specified, the output format is JSON.
-
 The C<statements> and C<settings> attributes are used to construct the
 query.  The C<statements> attribute is an array of strings, each of
 which is a line in the query.  The C<settings> attribute is a hash of
 settings that are prepended to the query.
+
+The C<:xml> and C<:json> parameters are optional and specify the
+output format.  They also add an "out" setting to the query.  Note
+that CSVs need to be done manually, because the fields are part of
+the settings.  For instance
+
+  op.settings<out> = 'csv(::id, ::lat, ::lon, name; true; ",")';
+
+The "true" indicates that a header row should be included.  The
+comma is the separator.
 
 =head1 ATTRIBUTES
 
@@ -189,6 +201,23 @@ setting names and the values are the setting values.
 
 An array of strings, each of which is a line in the query.  Every statement
 should end with a semicolon.
+
+=head1 EXAMPLES
+
+Run the same query in different formats:
+
+  use WebService::Overpass;
+
+  my \op = WebService::Overpass.new;
+
+  op.statements = <node(1); out meta;>;
+
+  say op.execute(:xml).elements[2].attribs<lat lon>;
+
+  say op.execute(:json)<elements>[0]<lat lon>;
+
+  op.settings<out> = 'csv(::id, ::lat, ::lon, name; true; ",")';
+  say op.execute;
 
 =head1 SEE ALSO
 

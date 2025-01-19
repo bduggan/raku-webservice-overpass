@@ -106,13 +106,13 @@ METHODS
 query
 -----
 
-    method query($data) returns Str
+    method query($data, Bool :$json, Bool :$xml) returns Str
 
-Send a query and return the result (as a string).
+Send a complete query and return the result (as a string).
 
-The `$data` parameter should be a complete overpass query.
+The `$data` parameter should be a complete overpass query. Overpass queries consist of "settings" followed by a semicolon, and then "statements". The settings are key-value pairs in square brackets.
 
-The format of the response depends on the first line of the query (csv, json etc). No parsing is currently done by this module.
+The format of the response depends on the first line of the query (csv, json etc). If `:json` is True, the response is parsed as JSON. If `:xml` is True, the response is parsed as XML. Otherwise, it is returned as a string. For "smarter" behavior, use the `execute` method below.
 
 execute
 -------
@@ -121,9 +121,13 @@ execute
 
 Send a query and return the result as a raku data structure.
 
-The `:xml` and `:json` parameters are optional and specify the output format. If neither is specified, the output format is JSON.
-
 The `statements` and `settings` attributes are used to construct the query. The `statements` attribute is an array of strings, each of which is a line in the query. The `settings` attribute is a hash of settings that are prepended to the query.
+
+The `:xml` and `:json` parameters are optional and specify the output format. They also add an "out" setting to the query. Note that CSVs need to be done manually, because the fields are part of the settings. For instance
+
+    op.settings<out> = 'csv(::id, ::lat, ::lon, name; true; ",")';
+
+The "true" indicates that a header row should be included. The comma is the separator.
 
 ATTRIBUTES
 ==========
@@ -148,6 +152,24 @@ statements
     has Str @.statements is rw;
 
 An array of strings, each of which is a line in the query. Every statement should end with a semicolon.
+
+EXAMPLES
+========
+
+Run the same query in different formats:
+
+    use WebService::Overpass;
+
+    my \op = WebService::Overpass.new;
+
+    op.statements = <node(1); out meta;>;
+
+    say op.execute(:xml).elements[2].attribs<lat lon>;
+
+    say op.execute(:json)<elements>[0]<lat lon>;
+
+    op.settings<out> = 'csv(::id, ::lat, ::lon, name; true; ",")';
+    say op.execute;
 
 SEE ALSO
 ========
