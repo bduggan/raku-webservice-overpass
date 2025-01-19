@@ -84,6 +84,15 @@ Output:
     2377985515,-25.3427478,131.0246858,Kulpi Watiku
     ...
 
+Construct queries with the `statements` attribute:
+
+    my \op = WebService::Overpass.new;
+    op.statements = <node(1); out meta;>;
+
+    # same thing:
+    say op.execute(:xml).elements[2].attribs<lat lon>.map(+*).List.raku;
+    say op.execute(:json)<elements>[0]<lat lon>.raku;
+
 See the [tutorial](https://osm-queries.ldodds.com/tutorial/index.html) for more examples.
 
 DESCRIPTION
@@ -105,6 +114,17 @@ The `$data` parameter should be a complete overpass query.
 
 The format of the response depends on the first line of the query (csv, json etc). No parsing is currently done by this module.
 
+execute
+-------
+
+    method execute(:$xml, :$json) returns Any
+
+Send a query and return the result as a raku data structure.
+
+The `:xml` and `:json` parameters are optional and specify the output format. If neither is specified, the output format is JSON.
+
+The `statements` and `settings` attributes are used to construct the query. The `statements` attribute is an array of strings, each of which is a line in the query. The `settings` attribute is a hash of settings that are prepended to the query.
+
 ATTRIBUTES
 ==========
 
@@ -114,6 +134,20 @@ url
     has $.url = 'https://overpass-api.de/api/interpreter';
 
 The URL of the Overpass API endpoint.
+
+settings
+--------
+
+    has %.settings is rw;
+
+A hash of settings that are prepended to the query. The keys are the setting names and the values are the setting values.
+
+statements
+----------
+
+    has Str @.statements is rw;
+
+An array of strings, each of which is a line in the query. Every statement should end with a semicolon.
 
 SEE ALSO
 ========
