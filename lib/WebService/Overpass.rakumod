@@ -1,6 +1,8 @@
 unit class WebService::Overpass;
 
 use HTTP::Tiny;
+use JSON::Fast;
+use XML;
 use Log::Async;
 
 logger.untapped-ok = True;
@@ -8,8 +10,24 @@ logger.untapped-ok = True;
 has $.url = 'https://overpass-api.de/api/interpreter';
 has $.ua = HTTP::Tiny.new;
 has $.logger = logger;
+has Str @.statements is rw;
+has %.settings is rw;
 
-method query($data) {
+method execute(Bool :$xml, Bool :$json) {
+  my %settings = self.settings;
+  %settings<out> = 'json' if $json;
+  %settings<out> = 'xml' if $xml;
+  %settings<out> //= 'json';
+  my $stmt = self.statements.join("\n");
+  # format: [out:json] [timeout:30] [bbox:$bbox] ;
+  my $str = %settings.map({ '[' ~ .key ~ ':' ~ .value ~ ']' }).join(' ');
+  my $use-json = $json || %settings<out> eq 'json';
+  my $use-xml = $xml || %settings<out> eq 'xml';
+  my $data = $str ~ ';' ~ "\n" ~ $stmt;
+  self.query: $data, :json($use-json), :xml($use-xml);
+}
+
+method query(Str $data, Bool :$json, Bool :$xml) {
   debug "Running overpass query";
   debug "> $_" for $data.lines;
   my $res = HTTP::Tiny.new.post: $!url, :content(%(:$data));
@@ -18,6 +36,8 @@ method query($data) {
     die "Error querying Overpass API: $res<status> $res<reason>";
   }
   my $out = $res<content>.decode;
+  return from-json($out) if $json;
+  return from-xml($out) if $xml;
   $out;
 }
 
