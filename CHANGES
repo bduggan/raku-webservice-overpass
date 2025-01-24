@@ -1,3 +1,7 @@
+0.0.7 2025-01-24
+  improved EXPORT
+  added raw option to query
+
 0.0.6 2025-01-19
   improve docs and csv handling
 
