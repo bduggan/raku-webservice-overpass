@@ -1,0 +1,25 @@
+#!raku
+
+use Test;
+use HTTP::Tiny;
+use WebService::Overpass 'op';
+
+plan 4;
+
+ok op, 'Got an Overpass object';
+
+ok op.^can('query'), 'can query';
+
+my $args;
+
+HTTP::Tiny.^find_method('post').wrap:
+  -> |args {
+    $args = args;
+    { content => 'node(1,2,3,4);'.encode, success => True }
+  };
+
+op.query('node(1,2,3,4);');
+
+ok $args, 'Got args';
+is $args<content><data>, 'node(1,2,3,4);'.encode, 'Got correct payload';
+

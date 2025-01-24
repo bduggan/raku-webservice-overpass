@@ -244,8 +244,10 @@ Brian Duggan
 
 }
 
-sub EXPORT($name = Nil) {
+sub EXPORT($name = Nil, *@args) {
   return %( ) without $name;
-  %( $name => WebService::Overpass.new );
+  my $obj = WebService::Overpass.new;
+  $obj.logger.send-to: $*ERR if @args.first: * eq '-debug';
+  %( $name => $obj );
 }
 
