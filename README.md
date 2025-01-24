@@ -11,9 +11,7 @@ SYNOPSIS
 
 Get a node from OpenStreetMap:
 
-    use WebService::Overpass 'op';
-
-    op.logger.send-to: $*ERR;
+    use WebService::Overpass 'op', '-debug';
 
     say op.query: q:to/OQL/;
         [out:json];
@@ -85,7 +83,8 @@ Output:
 
 Construct queries with the `statements` attribute:
 
-    my \op = WebService::Overpass.new;
+    use WebService::Overpass;
+
     op.statements = <node(1); out meta;>;
 
     # same thing:
@@ -102,7 +101,15 @@ This is a simple interface to the Overpass API. Overpass is an API for retrievin
 EXPORTS
 =======
 
-If an argument is given to the module, it is assumed to be a name and the module creates a new object of type `WebService::Overpass` and exports it.
+If an argument is given to the module, it is assumed to be a name and the module creates a new object of type `WebService::Overpass` and exports it. Also "-debug" will send debug output to stderr. So these are equivalent:
+
+    use WebService::Overpass 'op', '-debug';
+
+and
+
+    use WebService::Overpass;
+    my \op = WebService::Overpass.new;
+    op.logger.send-to: $*ERR;
 
 METHODS
 =======
