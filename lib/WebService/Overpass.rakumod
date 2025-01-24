@@ -54,10 +54,9 @@ WebService::Overpass - A simple interface to the Overpass API
 
 Get a node from OpenStreetMap:
 
-  use WebService::Overpass;
+  use WebService::Overpass 'op';
 
-  my \op = WebService::Overpass.new;
-  op.logger.send-to: $*ERR; # optional
+  op.logger.send-to: $*ERR;
 
   say op.query: q:to/OQL/;
       [out:json];
@@ -143,6 +142,12 @@ See the L<tutorial|https://osm-queries.ldodds.com/tutorial/index.html> for more 
 This is a simple interface to the Overpass API.  Overpass is an API
 for retrieving OpenStreetMap data.  Queries use the Overpass Query
 Language (Overpass QL).
+
+=head1 EXPORTS
+
+If an argument is given to the module, it is assumed to be a name
+and the module creates a new object of type C<WebService::Overpass>
+and exports it.
 
 =head1 METHODS
 
