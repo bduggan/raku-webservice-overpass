@@ -1,4 +1,4 @@
-unit class WebService::Overpass;
+class WebService::Overpass {
 
 use HTTP::Tiny;
 use JSON::Fast;
@@ -228,3 +228,11 @@ https://wiki.openstreetmap.org/wiki/Overpass_API
 Brian Duggan
 
 =end pod
+
+}
+
+sub EXPORT($name = Nil) {
+  return %( ) without $name;
+  %( $name => WebService::Overpass.new );
+}
+
