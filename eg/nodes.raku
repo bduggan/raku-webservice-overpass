@@ -1,7 +1,5 @@
-use WebService::Overpass;
-
-my \op = WebService::Overpass.new;
-op.logger.send-to: $*ERR; # optional
+use WebService::Overpass 'op';
+op.logger.send-to: $*ERR;
 
 say op.query: q:to/OQL/;
     [out:json];
