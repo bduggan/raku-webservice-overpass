@@ -117,7 +117,7 @@ The format of the response depends on the first line of the query (csv, json etc
 execute
 -------
 
-    method execute(:$xml, :$json) returns Any
+    method execute(:$xml, :$json, :$raw) returns Any
 
 Send a query and return the result as a raku data structure.
 
@@ -128,6 +128,8 @@ The `:xml` and `:json` parameters are optional and specify the output format. Th
     op.settings<out> = 'csv(::id, ::lat, ::lon, name; true; ",")';
 
 The "true" indicates that a header row should be included. The comma is the separator.
+
+The `:raw` parameter is optional and specifies that the raw response should be returned as a string. Sending `:json` and `:raw` for instance will set the format to json in the payload, but then return the raw unparsed JSON in the response.
 
 ATTRIBUTES
 ==========

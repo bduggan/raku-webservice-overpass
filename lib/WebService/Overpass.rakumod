@@ -13,7 +13,7 @@ has $.logger = logger;
 has Str @.statements is rw;
 has %.settings is rw;
 
-method execute(Bool :$xml, Bool :$json) {
+method execute(Bool :$xml, Bool :$json, Bool :$raw) {
   my %settings := self.settings;
   warning "no output format given" unless $json || $xml || self.settings<out>;
   %settings<out> = 'json' if $json;
@@ -24,6 +24,9 @@ method execute(Bool :$xml, Bool :$json) {
   my $use-json = $json || (%settings<out>  // '' ) eq 'json';
   my $use-xml = $xml || (%settings<out> // '' ) eq 'xml';
   my $data = $str ~ ';' ~ "\n" ~ $stmt;
+  if $raw {
+    return self.query: $data;
+  }
   self.query: $data, :json($use-json), :xml($use-xml);
 }
 
@@ -161,7 +164,7 @@ method below.
 
 =head2 execute
 
-  method execute(:$xml, :$json) returns Any
+  method execute(:$xml, :$json, :$raw) returns Any
 
 Send a query and return the result as a raku data structure.
 
@@ -179,6 +182,11 @@ the settings.  For instance
 
 The "true" indicates that a header row should be included.  The
 comma is the separator.
+
+The C<:raw> parameter is optional and specifies that the raw response
+should be returned as a string.  Sending C<:json> and C<:raw> for
+instance will set the format to json in the payload, but then return
+the raw unparsed JSON in the response.
 
 =head1 ATTRIBUTES
 
